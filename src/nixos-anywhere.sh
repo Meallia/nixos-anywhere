@@ -6,6 +6,7 @@ flake=""
 flakeAttr=""
 kexecUrl=""
 kexecExtraFlags=""
+kexecBuildLocally="n"
 sshStoreSettings="compress=true"
 enableDebug=""
 nixBuildFlags=()
@@ -100,6 +101,8 @@ Options:
   use another kexec tarball to bootstrap NixOS
 * --kexec-extra-flags
   extra flags to add into the call to kexec, e.g. "--no-sync"
+* --kexec-build-locally
+  build the kexec image locally instead of downloading it on the remote host
 * --ssh-store-setting <key> <value>
   ssh store settings appended to the store URI, e.g. "compress true". <value> needs to be URI encoded.
 * --post-kexec-ssh-port <ssh_port>
@@ -230,6 +233,9 @@ parseArgs() {
     --kexec-extra-flags)
       kexecExtraFlags=$2
       shift
+      ;;
+    --kexec-build-locally)
+      kexecBuildLocally=y
       ;;
     --ssh-store-setting)
       key=$2
@@ -623,7 +629,9 @@ runKexec() {
   if [[ ${isContainer} != "none" ]]; then
     echo "WARNING: This script does not support running from a '${isContainer}' container. kexec will likely not work" >&2
   fi
-
+  if [[ $kexecBuildLocally == "y" ]]; then
+    kexecUrl=$(nix build --no-link --print-out-paths "github:nix-community/nixos-images#packages.${isArch}-linux.kexec-installer-nixos-unstable-noninteractive")/nixos-kexec-installer-noninteractive-${isArch}-linux.tar.gz
+  fi
   if [[ $kexecUrl == "" ]]; then
     case "${isArch}" in
     x86_64 | aarch64)

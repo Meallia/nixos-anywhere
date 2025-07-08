@@ -20,6 +20,16 @@ nix run github:nix-community/nixos-anywhere -- \
   root@yourip
 ```
 
+Alternatively, you can use the `--kexec-build-locally` flag to automatically
+build the kexec image
+
+```
+nix run github:nix-community/nixos-anywhere -- \
+  --kexec-build-locally \
+  --flake 'github:your-user/your-repo#your-system' \
+  root@yourip
+```
+
 Make sure to replace `github:your-user/your-repo#your-system` with the
 appropriate Flake URL representing your NixOS configuration.
 
