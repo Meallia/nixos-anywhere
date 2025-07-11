@@ -34,6 +34,7 @@ module "install" {
   extra_files_script          = var.extra_files_script
   disk_encryption_key_scripts = var.disk_encryption_key_scripts
   extra_environment           = var.extra_environment
+  extra_arguments             = var.extra_arguments
   instance_id                 = var.instance_id
   phases                      = var.phases
   nixos_generate_config_path  = var.nixos_generate_config_path
@@ -52,13 +53,15 @@ module "nixos-rebuild" {
   # Do not execute this step if var.stop_after_disko == true
   count = var.stop_after_disko ? 0 : 1
 
-  source             = "../nixos-rebuild"
-  nixos_system       = module.system-build.result.out
-  ssh_private_key    = var.deployment_ssh_key
-  target_host        = var.target_host
-  target_user        = var.target_user
-  target_port        = var.target_port
-  install_bootloader = var.install_bootloader
+  source                    = "../nixos-rebuild"
+  nixos_system              = module.system-build.result.out
+  ssh_private_key           = var.deployment_ssh_key
+  ssh_options               = var.deployment_ssh_options
+  target_host               = var.target_host
+  target_user               = var.target_user
+  target_port               = var.target_port
+  install_bootloader        = var.install_bootloader
+  substitute_on_destination = var.substitute_on_destination
 }
 
 output "result" {
