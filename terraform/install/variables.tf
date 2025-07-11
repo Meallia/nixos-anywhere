@@ -80,6 +80,12 @@ variable "extra_environment" {
   default     = {}
 }
 
+variable "extra_arguments" {
+  type        = list(string)
+  description = "Extra arguments to pass to the nixos-anywhere script."
+  default     = []
+}
+
 variable "stop_after_disko" {
   type        = bool
   description = "DEPRECATED: Use `phases` instead. Exit after disko formatting"

@@ -2,8 +2,8 @@
 
 set -uex -o pipefail
 
-if [ "$#" -ne 6 ]; then
-  echo "USAGE: $0 NIXOS_SYSTEM TARGET_USER TARGET_HOST TARGET_PORT IGNORE_SYSTEMD_ERRORS INSTALL_BOOTLOADER" >&2
+if [ "$#" -ne 7 ]; then
+  echo "USAGE: $0 NIXOS_SYSTEM TARGET_USER TARGET_HOST TARGET_PORT IGNORE_SYSTEMD_ERRORS INSTALL_BOOTLOADER SUBSTITUTE_ON_DESTINATION" >&2
   exit 1
 fi
 
@@ -13,6 +13,7 @@ TARGET_HOST=$3
 TARGET_PORT=$4
 IGNORE_SYSTEMD_ERRORS=$5
 INSTALL_BOOTLOADER=$6
+SUBSTITUTE_ON_DESTINATION=$7
 
 shift 6
 
@@ -24,6 +25,10 @@ trap 'rm -rf "$workDir"' EXIT
 sshOpts=(-p "${TARGET_PORT}")
 sshOpts+=(-o UserKnownHostsFile=/dev/null)
 sshOpts+=(-o StrictHostKeyChecking=no)
+
+while IFS= read -r -d '' value; do
+  sshOpts+=("$value")
+done < <(jq -j 'to_entries[] | (.value, "\u0000")' <<<"${SSH_OPTIONS}")
 
 set +x
 if [[ -n ${SSH_KEY+x} && ${SSH_KEY} != "-" ]]; then
@@ -38,8 +43,14 @@ if [[ -n ${SSH_KEY+x} && ${SSH_KEY} != "-" ]]; then
 fi
 set -x
 
+if [[ $SUBSTITUTE_ON_DESTINATION == "true" ]]; then
+  SUBSTITUTE_ON_DESTINATION_FLAG='--substitute-on-destination'
+else
+  SUBSTITUTE_ON_DESTINATION_FLAG=''
+fi
+
 try=1
-until NIX_SSHOPTS="${sshOpts[*]}" nix copy -s --experimental-features nix-command --to "ssh://$TARGET" "$NIXOS_SYSTEM"; do
+until NIX_SSHOPTS="${sshOpts[*]}" nix copy ${SUBSTITUTE_ON_DESTINATION_FLAG} --experimental-features nix-command --to "ssh://$TARGET" "$NIXOS_SYSTEM"; do
   if [[ $try -gt 10 ]]; then
     echo "retries exhausted" >&2
     exit 1
