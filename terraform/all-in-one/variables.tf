@@ -51,6 +51,12 @@ variable "target_port" {
   default     = 22
 }
 
+variable "deployment_ssh_options" {
+  type        = list(string)
+  description = "Additional SSH options to use during deploy"
+  default     = []
+}
+
 variable "instance_id" {
   type        = string
   description = "The instance id of the target_host, used to track when to reinstall the machine"
@@ -114,6 +120,12 @@ variable "extra_environment" {
   default     = {}
 }
 
+variable "extra_arguments" {
+  type        = list(string)
+  description = "Extra arguments to pass to the nixos-anywhere script."
+  default     = []
+}
+
 variable "nix_options" {
   type        = map(string)
   description = "the options of nix"
@@ -148,4 +160,10 @@ variable "install_bootloader" {
   type        = bool
   description = "Install/re-install the bootloader"
   default     = false
+}
+
+variable "substitute_on_destination" {
+  type        = bool
+  description = "Causes the remote machine to try to substitute missing store paths, which may be faster if the link between the local and remote machines is slower than the link between the remote machine and its substituters (e.g. https://cache.nixos.org)."
+  default     = true
 }
