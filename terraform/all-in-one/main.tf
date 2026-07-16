@@ -22,24 +22,25 @@ locals {
 }
 
 module "install" {
-  source                      = "../install"
-  kexec_tarball_url           = var.kexec_tarball_url
-  target_user                 = local.install_user
-  target_host                 = var.target_host
-  target_port                 = local.install_port
-  nixos_partitioner           = module.partitioner-build.result.out
-  nixos_system                = module.system-build.result.out
-  ssh_private_key             = var.install_ssh_key
-  debug_logging               = var.debug_logging
-  extra_files_script          = var.extra_files_script
-  disk_encryption_key_scripts = var.disk_encryption_key_scripts
-  extra_environment           = var.extra_environment
-  extra_arguments             = var.extra_arguments
-  instance_id                 = var.instance_id
-  phases                      = var.phases
-  nixos_generate_config_path  = var.nixos_generate_config_path
-  nixos_facter_path           = var.nixos_facter_path
-  build_on_remote             = var.build_on_remote
+  source                       = "../install"
+  use_nixos_anywhere_from_path = var.use_nixos_anywhere_from_path
+  kexec_tarball_url            = var.kexec_tarball_url
+  target_user                  = local.install_user
+  target_host                  = var.target_host
+  target_port                  = local.install_port
+  nixos_partitioner            = module.partitioner-build.result.out
+  nixos_system                 = module.system-build.result.out
+  ssh_private_key              = var.install_ssh_key
+  debug_logging                = var.debug_logging
+  extra_files_script           = var.extra_files_script
+  disk_encryption_key_scripts  = var.disk_encryption_key_scripts
+  extra_environment            = var.extra_environment
+  extra_arguments              = var.extra_arguments
+  instance_id                  = var.instance_id
+  phases                       = var.phases
+  nixos_generate_config_path   = var.nixos_generate_config_path
+  nixos_facter_path            = var.nixos_facter_path
+  build_on_remote              = var.build_on_remote
   # deprecated attributes
   stop_after_disko = var.stop_after_disko
   no_reboot        = var.no_reboot

@@ -93,4 +93,8 @@ while IFS= read -r -d '' value; do
   args+=("$value")
 done < <(jq -j 'to_entries[] | (.value, "\u0000")' <<<"${EXTRA_ARGUMENTS}")
 
-nix run --extra-experimental-features 'nix-command flakes' "path:${SCRIPT_DIR}/../..#nixos-anywhere" -- "${args[@]}"
+if [[ ${input[use_nixos_anywhere_from_path]} == "true" ]]; then
+  nixos-anywhere "${args[@]}"
+else
+  nix run --extra-experimental-features 'nix-command flakes' "path:${SCRIPT_DIR}/../..#nixos-anywhere" -- "${args[@]}"
+fi

@@ -1,3 +1,8 @@
+variable "use_nixos_anywhere_from_path" {
+  type    = bool
+  default = false
+}
+
 variable "kexec_tarball_url" {
   type        = string
   description = "NixOS kexec installer tarball url"
