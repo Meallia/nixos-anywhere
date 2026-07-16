@@ -26,3 +26,9 @@ variable "debug_logging" {
   default     = false
   description = "Enable debug logging"
 }
+
+variable "lock_file" {
+  type        = string
+  default     = null
+  description = "If set, use this file path as a lock to serialize nix builds (prevents parallel execution)"
+}

@@ -4,7 +4,7 @@ locals {
   })
 }
 data "external" "nix-build" {
-  program = ["${path.module}/nix-build.sh"]
+  program = var.lock_file != null ? ["flock", var.lock_file, "${path.module}/nix-build.sh"] : ["${path.module}/nix-build.sh"]
   query = {
     attribute     = var.attribute
     file          = var.file

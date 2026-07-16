@@ -5,6 +5,7 @@ module "system-build" {
   file          = var.file
   nix_options   = var.nix_options
   special_args  = var.special_args
+  lock_file     = var.build_lock_file
 }
 
 module "partitioner-build" {
@@ -14,6 +15,7 @@ module "partitioner-build" {
   file          = var.file
   nix_options   = var.nix_options
   special_args  = var.special_args
+  lock_file     = var.build_lock_file
 }
 
 locals {

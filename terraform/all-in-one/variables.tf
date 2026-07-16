@@ -172,3 +172,9 @@ variable "substitute_on_destination" {
   description = "Causes the remote machine to try to substitute missing store paths, which may be faster if the link between the local and remote machines is slower than the link between the remote machine and its substituters (e.g. https://cache.nixos.org)."
   default     = true
 }
+
+variable "build_lock_file" {
+  type        = string
+  default     = null
+  description = "If set, use this file path as a lock to serialize nix builds (prevents parallel execution)"
+}
